@@ -44,14 +44,15 @@ def signup():
 
 @app.route('/docs', methods=['GET'])
 def docs():
-    return redirect('https://api.students.brown.edu/docs/getting-started')  # TODO: Fix this part to use url_for
+    return render_template('getting_started_documentation.html')
 
 
 @app.route('/docs/<docName>', methods=['GET'])
-def docs_for(docName="getting-started"):
-    print("POO")
+def docs_for(docName=""):
     api_documentation = {}
     name = ""
+    if not os.path.exists('api/public/' + docName + '/info.json'):
+        return render_template('404.html'), 404
     with open('api/public/' + docName + '/info.json') as f:
             data = json.load(f)
             name = data['name']
@@ -103,6 +104,10 @@ def add_member():
         return redirect(url_for('root'))
     return render_template('add_member.html', form=form,
                            api_documentations=list(api_documentations.find().sort("_id", 1)))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 # Static responses
 
