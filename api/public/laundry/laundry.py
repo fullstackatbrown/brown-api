@@ -1,6 +1,6 @@
 # vim: set ts=4 sts=4 sw=4 expandtab:
 from flask import request, jsonify
-from api import app, db, make_json_error, support_jsonp
+from api import app, make_json_error, support_jsonp
 from api.meta import require_client_id
 from api.scripts.laundry import Room
 
@@ -9,7 +9,7 @@ DATABASE OBJECTS: View templates on the private repository README.
 '''
 
 # simplify database names
-ldb = db.laundry
+# ldb = db.laundry
 
 
 @app.route('/laundry')

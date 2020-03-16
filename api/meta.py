@@ -1,22 +1,25 @@
 from functools import wraps
 from flask import render_template, url_for, request, redirect
 from flask import send_from_directory
-from api import app, db, requires_auth, make_json_error
+from api import app, requires_auth, make_json_error
 from api.forms import SignupForm, DocumentationForm, MemberForm
 from flask import Markup
 import markdown
 from datetime import datetime
 import os
+import json
 
-'''
-DATABASE OBJECTS: View templates on the private, repository README.
-'''
+# DATABASE OBJECTS: View templates on the private, repository README.
 
 # simplify collection names
-clients = db.clients
-api_documentations = db['api_documentations']
-members = db['members']
+# clients = db.clients
+apis = {}
+for endpoint in os.listdir("api/public"):
+    with open('api/public/' + endpoint + '/info.json') as f:
+        data = json.load(f)
+        apis[endpoint] = {"name": data['name']}
 
+# members = db['members']
 
 @app.route('/favicon.ico')
 def favicon():
@@ -27,8 +30,8 @@ def favicon():
 @app.route('/')
 def root():
     # num_requests = get_total_requests()
-    return render_template('home.html',
-                           api_documentations=list(api_documentations.find().sort("_id", 1)))
+    print(apis)
+    return render_template('home.html', apis=list(apis))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -36,8 +39,7 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         return redirect(url_for('root', signedup='true'))
-    return render_template('signup.html', form=form, active="signup",
-                           api_documentations=list(api_documentations.find().sort("_id", 1)))
+    return render_template('signup.html', form=form, active="signup")
 
 
 @app.route('/docs', methods=['GET'])
@@ -47,12 +49,17 @@ def docs():
 
 @app.route('/docs/<docName>', methods=['GET'])
 def docs_for(docName="getting-started"):
-    api_documentation = api_documentations.find_one({'urlname': docName})
-    name = api_documentation['name']
-    contents = api_documentation['contents']
+    print("POO")
+    api_documentation = {}
+    name = ""
+    with open('api/public/' + docName + '/info.json') as f:
+            data = json.load(f)
+            name = data['name']
+    contents = ""
+    with open('api/public/' + docName + '/docs.md') as f:
+            contents = f.read()
     contents = Markup(markdown.markdown(contents))
     return render_template('documentation_template.html',
-                           api_documentations=list(api_documentations.find().sort("_id", 1)),
                            name=name, contents=contents, active="docs")
 
 

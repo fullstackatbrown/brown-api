@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request, current_app, Response, Request
 from werkzeug.exceptions import default_exceptions
 from werkzeug.exceptions import HTTPException
+from dotenv import load_dotenv
 from functools import wraps
-import pymongo
 import os
 
+# get .env variables
+load_dotenv()
 
 def make_json_error(ex):
     ''' A wrapper for all exceptions
@@ -68,16 +70,7 @@ except IOError:
 for code in default_exceptions:
     app.error_handler_spec[None][code] = make_json_error
 
-
-if 'MONGO_URI' in app.config:
-    db = pymongo.MongoClient(app.config['MONGO_URI']).brown
-elif 'MONGO_URI' in os.environ:
-    db = pymongo.MongoClient(os.environ['MONGO_URI']).brown
-else:
-    print("The database URI's environment variable was not found.")
-
 # BASIC AUTH
-
 
 def check_auth(username, password):
     """This function is called to check if a username /
@@ -110,15 +103,10 @@ def requires_auth(f):
     return decorated
 
 import api.meta
-import api.dining
-import api.wifi
-import api.laundry
-import api.courses
 
-import api.meta
-import api.dining
-import api.wifi
-import api.laundry
-import api.courses
+# import all endpoints from the public folder
+for endpoint in os.listdir("api/public"):
+    importstring = """import api.public.""" + endpoint + """.""" + endpoint
+    exec(importstring)
 
 __all__ = ['api', ]
