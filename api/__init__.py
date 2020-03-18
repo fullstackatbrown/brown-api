@@ -6,7 +6,7 @@ from functools import wraps
 import os
 from api.scripts.laundry import scrape
 
-scrape.main()
+# scrape.main()
 
 # get .env variables
 load_dotenv()

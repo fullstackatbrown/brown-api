@@ -1,8 +1,6 @@
 # vim: set ts=4 sts=4 sw=4 expandtab:
 from bs4 import BeautifulSoup as soup
 import sqlite3
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 import os
 from api.scripts.laundry import Room, util
 
@@ -14,9 +12,6 @@ _campus_url = "http://laundryview.com/{0}".format(_brown_campus_id)
 def scrape_rooms():
     ''' collection is a pymongo collection object '''
     # html = util.get_html(_campus_url)
-    browser = webdriver.PhantomJS()
-    browser.get(url)
-    html = browser.page_source
     print(_campus_url)
     parsed = soup(html, 'html5lib')
     links = parsed.find('div', {'ng-click': 'ctrl.goToRoom(room)'})
