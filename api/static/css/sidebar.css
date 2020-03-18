@@ -2,6 +2,7 @@
   background-color: rgb(248,248,248);
   min-width: 260px;
   z-index: -1;
+  overflow: hidden;
 }
 
 .barfixed {
@@ -43,4 +44,16 @@
 
 .barrowdiv.active {
   background-color: rgb(0,0,0,0.1);
+}
+
+
+@media only screen and (max-width: 800px) {
+  .barfixed {
+    visibility: hidden;
+  }
+  .bar {
+    visibility: hidden;
+    min-width: 0px;
+    width: 0px;
+  }
 }
