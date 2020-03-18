@@ -124,7 +124,14 @@ li .active {
 .logo {
   display: flex;
   flex-direction: row;
-  min-width: 200px;
+  align-items: flex-end;
+  min-width: 250px;
+}
+
+
+.icon {
+  height: 34px;
+  margin-right: 14px;
 }
 
 .contents {
