@@ -6,6 +6,7 @@ from api.forms import SignupForm, DocumentationForm, MemberForm
 from flask import Markup
 import markdown
 from datetime import datetime
+import sqlite3
 import os
 import json
 
@@ -121,34 +122,15 @@ def is_valid_client(client_id):
     if client_id == 'missing_client':
         # requests without a client_id should default to 'missing_client'
         return False
-
-    client = clients.find_one({'client_id': client_id})
-    if client and 'valid' in client and client['valid']:
-        # client exists in database and is marked as valid
-        return True
-    print("Client ID", client_id, "not found in client collection")
-    return False
-
-
-def log_client(client_id, endpoint, timestamp):
-    ''' Log a client's activity with the time of occurence
-        Return True if successfully logged, otherwise False
-    '''
-    result = clients.update(
-        {'client_id': client_id},
-        {
-            '$inc': {'requests': 1},
-            '$push': {
-                'activity': {
-                    'endpoint': endpoint,
-                    'timestamp': timestamp
-                }
-            }
-        })
-    if u'nModified' in result and result[u'nModified'] == 1:
-        return True
-    print("Bad result from log_client: ", result)
-    return False
+    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
+        c = con.execute("SELECT * FROM auth WHERE key=:key", {"key": client_id})
+        client = c.fetchone()
+        print(client[5])
+        if client and client[5]:
+            # client exists in database and is marked as valid
+            return True
+        print("Client ID", client_id, "not found in client collection")
+        return False
 
 
 def invalidate_client(client_id):
@@ -193,7 +175,6 @@ class require_client_id(object):
 
             client_id = request.args.get('client_id', 'missing_client')
             if is_valid_client(client_id):
-                log_client(client_id, ep, str(datetime.now()))
                 return f(*args, **kwargs)
             else:
                 return make_json_error(INVALID_CLIENT_MSG)

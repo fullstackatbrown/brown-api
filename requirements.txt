@@ -21,3 +21,4 @@ webassets==0.11.1
 Werkzeug==0.10.4
 WTForms==2.1
 python-dotenv==0.12.0
+selenium==3.141.0

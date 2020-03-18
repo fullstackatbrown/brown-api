@@ -4,6 +4,9 @@ from werkzeug.exceptions import HTTPException
 from dotenv import load_dotenv
 from functools import wraps
 import os
+from api.scripts.laundry import scrape
+
+scrape.main()
 
 # get .env variables
 load_dotenv()

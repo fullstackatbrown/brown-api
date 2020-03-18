@@ -15,4 +15,4 @@ def get_html(url, need_auth=False):
         r = requests.get('http://laundryview.com/lvs.php?s=1921',
                          cookies=cookies)
         print(r.cookies)
-    return requests.get(url, cookies=cookies).text
+    return requests.get(url, cookies=cookies, verify=False).text

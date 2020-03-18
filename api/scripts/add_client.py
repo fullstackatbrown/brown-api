@@ -17,7 +17,6 @@ def add_client_id(email, username, client_id=None):
         return None
     client_id = str(uuid4())
     with sqlite3.connect(os.environ['DB_LOCATION']) as con:
-        selectuser = con.execute("SELECT * FROM auth WHERE key=:key", {"key": client_id})
         newuser = (client_id, username, email, str(datetime.now()))
         passed = False
         while not passed:
