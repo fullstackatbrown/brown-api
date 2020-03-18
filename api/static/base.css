@@ -293,6 +293,15 @@ button {
   background-color: rgb(0,0,0,0.1);
   padding: 10px;
   border: none;
+  font-size: 16px;
+  font-weight: 300;
+  border-radius: 6px;
+  transition: 0.1s;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.5;
 }
 
 label {

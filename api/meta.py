@@ -83,11 +83,9 @@ def docs_for(docName=""):
                            doc=docName)
 
 
-@app.route('/about-us', methods=['GET'])
+@app.route('/about', methods=['GET'])
 def about_us():
-    return render_template('about-us.html',
-                           api_documentations=list(api_documentations.find().sort("_id", 1)),
-                           active="about", members=members.find().sort("name", 1))
+    return render_template('about-us.html', active="about")
 
 
 @app.route('/github', methods=['GET'])
