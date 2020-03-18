@@ -1,21 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Brown APIs{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='documentation.css') }}">
+{% endblock %}
+
+{% block title %}Brown APIs - {{ name }}{% endblock %}
 
 {% block contents %}
 
-<div class="container home-container">
-  <!--<div class="jumbotron hidden-xs">-->
-    <!--<h1>Data Viz Here!</h1>-->
-    <!--<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>-->
-    <!--<p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>-->
-  <!--</div>-->
-  <div class="row">
-    {% for api in apis %}
-      <div>
-        {{ api }}
-      </div>
-    {% endfor %}
-  </div>
+{% include "sidebar.html" %}
+
+<div class="infosection">
+  <p>{{ contents|safe }}</p>
 </div>
+
 {% endblock %}

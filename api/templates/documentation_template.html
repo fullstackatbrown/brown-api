@@ -7,28 +7,10 @@
 {% block title %}Brown APIs - {{ name }}{% endblock %}
 
 {% block contents %}
+{% include "sidebar.html" %}
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-10">
-      <h1>{{ name }}</h1>
-
-      <p>{{ contents|safe }}</p>
-
-    </div>
-    <div class="col-md-2">
-      <h2></h2>
-      <div class="list-group">
-        {% for documentation in api_documentations %}
-        {% if documentation.name == name %}
-        <a href="/docs/{{ documentation.urlname }}" class="list-group-item active">{{ documentation.name }}</a>
-        {% else %}
-        <a href="/docs/{{ documentation.urlname }}" class="list-group-item">{{ documentation.name }}</a>
-        {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+<div class="infosection">
+  <p>{{ contents|safe }}</p>
 </div>
 
 {% endblock %}

@@ -1,8 +1,13 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  color: rgb(37,41,46);
+  font-weight: 300;
+  font-size: 16px;
+  color: rgb(0,0,0,0.68);
+}
+
+footer {
+  background-color: rgb(248,248,248);
 }
 
 a {
@@ -11,6 +16,9 @@ a {
 }
 
 nav {
+  position: fixed;
+  width: calc(100vw - 60px);
+  background-color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,33 +28,50 @@ nav {
   box-shadow: 0px 0px 3px 1px rgb(0,0,0,0.2);
 }
 
+h4 {
+  font-weight: 500;
+  margin-top: 50px;
+}
+
 h3 {
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 50px;
+
 }
 
 h2 {
-  font-size: 24px;
-  font-weight: 400;
+  font-size: 16px;
+  font-weight: 500;
   border-bottom: 1px solid rgb(0,0,0,0.1);
   padding-bottom: 12px;
   margin-bottom: 18px;
+  margin-top: 50px;
 }
 
 h1 {
+  font-size: 24px;
+  font-weight: 500;
   border-bottom: 1px solid rgb(0,0,0,0.1);
   padding-bottom: 18px;
   margin-bottom: 18px;
 }
 
 code {
-  background-color: rgb(0,0,0,0.07);
+  background-color: rgb(0,0,0,0.078);
   padding: 2px;
   padding-left: 6px;
   padding-right: 6px;
   border-radius: 3px;
 }
 
+strong {
+  font-weight: 500;
+  font-size: 16
+}
+
 .title {
+  font-weight: 600;
   font-size: 30px;
   margin: 0px;
 }
@@ -74,7 +99,6 @@ code {
 
 li .active {
   background-color: rgb(200,200,200, 0.5);
-  color: #3b0052;
   border-radius: 6px;
 }
 
@@ -109,11 +133,93 @@ li .active {
   display: flex;
   flex-direction: row;
   width: 100%;
-  line-height: 23px;
+  line-height: 26px;
+  padding-top: 80px;
+
 }
 
 .infosection {
-  padding: 60px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.infosection > * {
   padding-left: 80px;
   padding-right: 80px;
+}
+
+.infosection h2 {
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-left: 80px;
+  margin-right: 80px;
+}
+
+.infosection ol {
+  padding-left: 120px;
+  padding-right: 0px;
+}
+
+.infosection ol ul {
+  padding-left: 30px;
+  padding-right: 0px;
+}
+
+.infosection ul {
+  padding-left: 120px;
+  padding-right: 0px;
+}
+
+.infosection ul ul {
+  padding-left: 30px;
+  padding-right: 0px;
+}
+
+.infosection li {
+  padding-left: 0px;
+  margin-left: 0px;
+}
+
+table {
+  padding: 0px !important;
+  margin-left: 80px;
+  margin-right: 80px;
+  border: 1px solid rgb(0,0,0,0.2);
+  border-spacing: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+thead th{
+  background-color: rgb(0,0,0,0.04);
+
+  padding: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  text-align: left;
+  border: 1px solid rgb(0,0,0,0.2);
+  border-left-width: 0px;
+  border-top-width: 0px;
+}
+
+tr :last-child{
+  border-right-width: 0px;
+}
+
+td{
+  padding: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  text-align: left;
+  border: 1px solid rgb(0,0,0,0.2);
+  border-left-width: 0px;
+  border-top-width: 0px;
+}
+
+tbody :last-child > * {
+  border-bottom-width: 0px;
+}
+
+thead {
+  padding: 0px !important;
 }

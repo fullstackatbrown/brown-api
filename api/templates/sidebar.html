@@ -2,6 +2,32 @@
 <link rel="stylesheet" type="text/css" href="../static/css/sidebar.css">
 {% endblock %}
 
-<div class="bar">
-  fdsafasfsaasdfsad
+<div class="bar"></div>
+<div class="barfixed">
+  <a href="/docs" class="barrow">
+    <div class="barrowdiv  {% if doc == "home" %} active {% endif %}">
+      <img src={{ url_for('static', filename='icons/home.png') }}>
+      <div>
+        Home
+      </div>
+    </div>
+  </a>
+  <a href="/docs/gettingstarted" class="barrow">
+    <div class="barrowdiv  {% if doc == "start" %} active {% endif %}">
+      <img src={{ url_for('static', filename='icons/getting_started.png') }}>
+      <div>
+        Getting Started
+      </div>
+    </div>
+  </a>
+  {% for api in apis %}
+  <a href="/docs/{{ api[0] }}" class="barrow">
+    <div class="barrowdiv  {% if doc == api[0] %} active {% endif %}">
+      <img src={{ url_for('static', filename='icons/' +api[1]['icon']) }}>
+      <div>
+        {{ api[1]['name'] }}
+      </div>
+    </div>
+  </a>
+  {% endfor %}
 </div>

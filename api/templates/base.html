@@ -56,36 +56,5 @@
         {% endblock %}
       </section>
     </div>
-
-    <footer>
-      <div class="container footer-content">
-        <div class="row">
-          <div class="col-md-4 col-sm-4">
-            <h3>ORGANIZATION</h3>
-            <ul>
-              <li><a href="{{ url_for('about_us')}}">About Us</a></li>
-              <li><a href="{{ url_for('signup')}}">Sign Up</a></li>
-              <li><a href="{{ url_for('github')}}">View Our Github</a></li>
-              <li><a href="{{ url_for('contribute')}}">How To Contribute</a></li>
-            </ul>
-          </div>
-          <div class="col-md-4 col-sm-4">
-            <h3>DOCUMENTATION</h3>
-            <ul>
-              {% for documentation in api_documentations %}
-              <li><a href="/docs/{{ documentation.urlname }}">{{ documentation.name }}</a></li>
-              {% endfor %}
-            </ul>
-          </div>
-          <div class="col-md-4 col-sm-4">
-            <h3>COMMUNITY</h3>
-            <ul>
-              <li><a href="https://www.facebook.com/groups/brown.apis/">Facebook</a></li>
-              <li><a href="https://twitter.com/BrownAPIs">Twitter</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer>
   </body>
 </html>
