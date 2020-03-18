@@ -11,15 +11,8 @@
   <!-- Custom Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800|Roboto+Slab:100,200,300,400,500,600,700&display=swap" rel="stylesheet">
 
-  <!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-
   <!-- Custom CSS -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='base.css') }}">
-
-  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
   {% block head %}
   {% endblock %}
 
@@ -27,50 +20,41 @@
   <body>
     <div>
       <div>
-        <div>
-          <nav>
-            <div>
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-
-              <div class="navbar-brand header-component">
-                <a href="{{ url_for('root')}}">
-                  <div>
-                    Brown APIs
-                  </div>
+        <nav>
+          <div class="navbar-brand header-component">
+            <a class="logo defaulta" href="{{ url_for('root')}}">
+              <h1 class="title" style="font-family: 'Raleway', serif">
+                Brown <span style="font-weight: 200">api</span>
+              </h1>
+              <aside class="title-aside">
+                by
+                <img height="16px" style="margin-left: 4px;" src="../static/img/fsab.png"/>
+              </aside>
+            </a>
+          </div>
+          <ul>
+            {% set navigation_bar = [
+                ('/', 'docs', 'Documentation'),
+                ('/about', 'about', 'About Us'),
+                ('/signup', 'signup', 'Sign Up')
+            ] -%}
+            {% set active_page = active_page|default('index') -%}
+            {% for href, id, caption in navigation_bar %}
+              <li class="navli">
+                <a {% if id == active %} class="defaulta navbtn active" {% else %}
+                class="defaulta navbtn" {% endif %}
+                  href="{{ href|e }}">
+                  {{ caption|e }}
                 </a>
-              </div>
-
-              <div>
-                <ul>
-                  {% if active == "about" %}
-                  <li><a href="{{ url_for('about_us')}}">About Us</a></li>
-                  {% else %}
-                  <li><a href="{{ url_for('about_us')}}">About Us</a></li>
-                  {% endif %}
-                  {% if active == "docs" %}
-                  <li><a href="{{ url_for('docs')}}">Docs</a></li>
-                  {% else %}
-                  <li><a href="{{ url_for('docs')}}">Docs</a></li>
-                  {% endif %}
-                  {% if active == "signup" %}
-                  <li><a href="{{ url_for('signup')}}">Sign Up</a></li>
-                  {% else %}
-                  <li><a href="{{ url_for('signup')}}">Sign Up</a></li>
-                  {% endif %}
-                </ul>
-              </div>
-            </div>
-          </nav>
-        </div>
-        <hr>
-        {% block contents %}
-        {% endblock  %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
       </div>
+      <section class="contents">
+        {% block contents %}
+        {% endblock %}
+      </section>
     </div>
 
     <footer>

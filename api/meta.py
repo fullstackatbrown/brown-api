@@ -32,8 +32,11 @@ def favicon():
 def root():
     # num_requests = get_total_requests()
     print(apis)
-    return render_template('home.html', apis=list(apis))
-
+    contents = ""
+    with open('api/static/misc/getting_started.md') as f:
+            contents = f.read()
+    contents = Markup(markdown.markdown(contents))
+    return render_template('getting_started_documentation.html', active="docs", contents=contents)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -45,7 +48,7 @@ def signup():
 
 @app.route('/docs', methods=['GET'])
 def docs():
-    return render_template('getting_started_documentation.html')
+    return render_template('getting_started_documentation.html', active="docs")
 
 
 @app.route('/docs/<docName>', methods=['GET'])
