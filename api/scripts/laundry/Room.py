@@ -1,9 +1,12 @@
 # vim: set ts=4 sts=4 sw=4 expandtab:
 import re
+import datetime
+import requests
 from api.scripts.laundry import util, Machine
+import sqlite3
+import os
 
-_room_static_url = "http://laundryview.com/staticRoomData.php?location=%s"
-_room_dynamic_url = "http://laundryview.com/dynamicRoomData.php?location=%s"
+_room_url = "http://www.laundryview.com/api/currentRoomData?school_desc_key=1921&location="
 _machine_id_re = re.compile(r'machine(Status|Data)([0-9]+)')
 
 
@@ -12,40 +15,42 @@ def to_str(room):
 
 
 def scrape_machines(room):
-    html = util.get_html(_room_static_url % room['id'])
-    machines = {}
-    for kv in html.split('&'):
-        if kv == '':
-            continue
-
-        (k, v) = kv.strip().split('=')
-
-        if _machine_id_re.match(k) is not None:
-            mid = _machine_id_re.match(k).group(2)
-            machines[mid] = Machine.props_to_doc(mid, v)
-
-    room['machines'] = list(machines.values())
+    timestamp = datetime.datetime.utcnow().timestamp()
+    _this_room_url = _room_url + room['id'] + "&rdm=" + str(int(timestamp))
+    machines = requests.get(_this_room_url, verify="false").json()['objects']
+    room['machines'] = list(machines)
     return room
 
 
-def get_machine_statuses(room):
-    html = util.get_html(_room_dynamic_url % room['id'], need_auth=True)[1:]
-    for kv in re.split('\n&', html):
-        if kv == '':
-            continue
-
-        (k, v) = kv.strip().split('=')
-        if _machine_id_re.match(k) is not None:
-            mid = _machine_id_re.match(k).group(2)
-            # lol O(mn)
-            for idx, mach in enumerate(room['machines']):
-                if mach['id'] == mid:
-                    props = v.split(':')
-                    if props[6] == '0' or props[6] == '':
-                        room['machines'][idx]['message'] = None
-                    else:
-                        room['machines'][idx]['message'] = props[6]
-                    room['machines'][idx]['avail'] = props[0] == "1"
-                    room['machines'][idx]['time_remaining'] = int(props[1])
-                    break
-    return room
+def get_machine_statuses(room_id):
+    timestamp = datetime.datetime.utcnow().timestamp()
+    _this_room_url = _room_url+ room_id + "&rdm=" + str(int(timestamp))
+    machines = requests.get(_this_room_url, verify="false").json()['objects']
+    machine_list = []
+    for machine in machines:
+        if (machine['type'] == "washFL" or
+            machine['type'] == "washNdry" or
+            machine['type'] == "dry"):
+            new_machine = {
+                            "id": machine['appliance_desc_key'],
+                            "room_id": room_id,
+                            "type": machine['type'],
+                            "avail": machine['time_left_lite'] is 'Avaliable',
+                            "time_remaining": machine['time_remaining'],
+                            "average_run_time": machine['average_run_time']
+                          }
+            machine_list.append(new_machine)
+        elif (machine['type'] == "dblDry"):
+            new_machine = {
+                            "id": machine['appliance_desc_key'],
+                            "room_id": room_id,
+                            "type": machine['type'],
+                            "avail1": machine['time_left_lite'] is 'Avaliable',
+                            "time_remaining1": machine['time_remaining'],
+                            "average_run_time1": machine['average_run_time'],
+                            "avail2": machine['time_left_lite2'] is 'Avaliable',
+                            "time_remaining2": machine['time_remaining2'],
+                            "average_run_time2": machine['average_run_time2']
+                          }
+            machine_list.append(new_machine)
+    return machine_list

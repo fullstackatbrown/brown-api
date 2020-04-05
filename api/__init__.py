@@ -6,10 +6,11 @@ from functools import wraps
 import os
 from api.scripts.laundry import scrape
 
-# scrape.main()
-
 # get .env variables
 load_dotenv()
+
+# Uncomment if updating db on start
+# scrape.main()
 
 def make_json_error(ex):
     ''' A wrapper for all exceptions

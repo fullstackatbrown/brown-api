@@ -21,7 +21,7 @@ for endpoint in os.listdir("api/public"):
         apis[endpoint] = {"name": data['name'], "icon": data['icon']}
 print(apis.items())
 apis = apis.items()
-print
+
 # members = db['members']
 
 @app.route('/favicon.ico')
@@ -141,12 +141,12 @@ def is_valid_client(client_id):
     with sqlite3.connect(os.environ['DB_LOCATION']) as con:
         c = con.execute("SELECT * FROM auth WHERE key=:key", {"key": client_id})
         client = c.fetchone()
-        print(client[5])
-        if client and client[5]:
-            # client exists in database and is marked as valid
-            return True
-        print("Client ID", client_id, "not found in client collection")
-        return False
+        print(client)
+        if client == None:
+            print("Client ID", client_id, "not found in client collection")
+            return False
+        # client exists in database and is marked as valid
+        return True
 
 
 def invalidate_client(client_id):
