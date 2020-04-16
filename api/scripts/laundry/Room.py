@@ -2,8 +2,7 @@
 import re
 import datetime
 import requests
-from api.scripts.laundry import util, Machine
-import sqlite3
+from api.scripts.laundry import util
 import os
 
 _room_url = "http://www.laundryview.com/api/currentRoomData?school_desc_key=1921&location="

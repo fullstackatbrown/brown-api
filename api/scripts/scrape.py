@@ -1,7 +1,7 @@
 from sys import argv
 from sys import exit
+from api import con
 import time
-import sqlite3
 import os
 
 from api.scripts.eateries import Eatery
@@ -59,13 +59,17 @@ def main():
     # if no eateries specified, scrape all eateries
     add_eateries = ['andrews-commons', 'sharpe-refectory']
     eateries = []
-    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
+    with con.cursor() as cur:
         # Add eateries to be added
         for eatery_name in add_eateries:
-            con.execute("INSERT OR REPLACE INTO dining_halls (name) VALUES (?)", (eatery_name,))
+            try:
+                cur.execute("INSERT INTO dining_halls (name) VALUES (%s)", (eatery_name,))
+            except:
+                pass
         # Fetch the other eateries from the db
-        c = con.execute("SELECT * FROM dining_halls")
-        dining_halls = c.fetchall()
+        cur.execute("SELECT * FROM dining_halls")
+        dining_halls = cur.fetchall()
+        cur.close()
         for dining_hall in dining_halls:
             eateries.append(Eatery(dining_hall[0]))
     print("Scraping Brown Dining Services' sites for menus and hours...")

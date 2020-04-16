@@ -4,15 +4,19 @@ from werkzeug.exceptions import HTTPException
 from dotenv import load_dotenv
 from functools import wraps
 import os
-# from api.scripts.laundry import scrape
-from api.scripts import scrape
+import psycopg2
 
 
 # get .env variables
 load_dotenv()
 
+# DB Setup
+con = psycopg2.connect("dbname=brownapi user=johnny")
+con.autocommit = True
+
+from api.scripts import scrape
+# from api.scripts.laundry import scrape
 # Uncomment if updating db on start
-# scrape.main()
 scrape.main()
 
 def make_json_error(ex):

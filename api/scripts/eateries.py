@@ -1,5 +1,4 @@
 import requests
-import sqlite3
 import json
 import os
 import re
@@ -8,6 +7,7 @@ import datetime
 import hashlib
 from urllib.parse import unquote
 from bs4 import BeautifulSoup as soup
+from api import con
 from datetime import date, timedelta
 
 class Eatery:
@@ -113,21 +113,24 @@ class Eatery:
         ''' Add a single menu to the database
             Return True if successful, otherwise False
         '''
-        with sqlite3.connect(os.environ['DB_LOCATION']) as con:
+        with con.cursor() as cur:
             for meal in data['daily_schedule']:
                 for dish in meal['menu']:
                     # Create IDs by hashing name and description
                     dish_id = str(hashlib.sha1((dish['dish_name'] + dish['dish_description']).encode('utf-8')).hexdigest())
-                    c = con.execute("INSERT OR REPLACE INTO dishes (id, name, description, vegetarian, station, meal, dining_hall) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                (dish_id, dish['dish_name'], dish['dish_description'], dish['vegetarian'], dish['station'], meal['meal_title'], self.name))
+                    try:
+                        cur.execute("INSERT INTO dishes (id, name, description, vegetarian, station, meal, dining_hall) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                                    (dish_id, dish['dish_name'], dish['dish_description'], dish['vegetarian'], dish['station'], meal['meal_title'], self.name))
+                    except:
+                        pass
             now = datetime.datetime.now()
             id = abs(hash(datetime.datetime.now()))
-            con.execute("INSERT OR REPLACE INTO dining_data (id, dining_hall, special_data, weekly_schedule, daily_schedule, year, month, day, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            cur.execute("INSERT INTO dining_data (id, dining_hall, special_data, weekly_schedule, daily_schedule, year, month, day, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                         (id, self.name, json.dumps(data['special']),
                         json.dumps(data['weekly_schedule']),
                         json.dumps(data['daily_schedule']), int(now.year),
                         int(now.month), int(now.day), str(datetime.datetime.now())))
-
+            cur.close()
 # Helper methods
 def create_timespan(str):
     s_e_tuple = clean_string(str).split(" - ")

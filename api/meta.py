@@ -1,19 +1,19 @@
 from functools import wraps
 from flask import render_template, url_for, request, redirect
 from flask import send_from_directory
-from api import app, requires_auth, make_json_error
-from api.forms import SignupForm, DocumentationForm, MemberForm
+from api import con, app, requires_auth, make_json_error
 from flask import Markup
 import markdown
 from datetime import datetime
-import sqlite3
 import os
 import json
+import psycopg2
 
 # DATABASE OBJECTS: View templates on the private, repository README.
 
 # simplify collection names
 # clients = db.clients
+
 apis = {}
 for endpoint in os.listdir("api/public"):
     with open('api/public/' + endpoint + '/info/info.json') as f:
@@ -102,30 +102,6 @@ def contribute():
                            api_documentations=list(api_documentations.find().sort("_id", 1)),
                            name='How to Contribute', contents=contents)
 
-
-@app.route('/admin/add-documentation', methods=['GET', 'POST'])
-@requires_auth
-def add_documentation():
-    form = DocumentationForm()
-    if form.validate_on_submit():
-        return redirect(url_for('root'))
-    return render_template('add_documentation.html', form=form,
-                           api_documentations=list(api_documentations.find().sort("_id", 1)))
-
-
-@app.route('/admin/add-member', methods=['GET', 'POST'])
-@requires_auth
-def add_member():
-    form = MemberForm()
-    if form.validate_on_submit():
-        return redirect(url_for('root'))
-    return render_template('add_member.html', form=form,
-                           api_documentations=list(api_documentations.find().sort("_id", 1)))
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
 # Static responses
 
 INVALID_CLIENT_MSG = "invalid client id"
@@ -138,9 +114,9 @@ def is_valid_client(client_id):
     if client_id == 'missing_client':
         # requests without a client_id should default to 'missing_client'
         return False
-    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
-        c = con.execute("SELECT * FROM auth WHERE key=:key", {"key": client_id})
-        client = c.fetchone()
+    with con.cursor() as cur:
+        cur.execute("SELECT * FROM auth WHERE key=%s", (client_id,))
+        client = cur.fetchone()
         print(client)
         if client == None:
             print("Client ID", client_id, "not found in client collection")

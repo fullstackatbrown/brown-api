@@ -1,9 +1,8 @@
 # vim: set ts=4 sts=4 sw=4 expandtab:
 from flask import request, jsonify
-from api import app, make_json_error, support_jsonp
+from api import con, app, make_json_error, support_jsonp
 from api.meta import require_client_id
 from api.scripts.laundry import Room
-import sqlite3
 import os
 
 '''
@@ -26,9 +25,10 @@ def laundry_index():
 @support_jsonp
 @require_client_id()
 def req_laundry_room_list():
-    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
-        c = con.execute("SELECT * FROM laundry_rooms")
-        results = c.fetchall()
+    with con.cursor() as cur:
+        cur.execute("SELECT * FROM laundry_rooms")
+        results = cur.fetchall()
+        cur.close()
         result_list = [{"name": r[1], "id": r[0]} for r in results]
         return jsonify(num_results=len(result_list), results=result_list)
 
@@ -36,14 +36,18 @@ def req_laundry_room_list():
 @support_jsonp
 @require_client_id()
 def req_room_detail(room_id):
-    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
-        c = con.execute("SELECT * FROM laundry_rooms WHERE id = ?", (int(room_id),))
-        room = c.fetchone()
+    with con.cursor() as cur:
+        cur.execute("SELECT * FROM laundry_rooms WHERE id = %s", (int(room_id),))
+        room = cur.fetchone()
         if room is None:
             return make_json_error('Room not found')
-        c = con.execute("SELECT * FROM laundry_machines WHERE room_id = ?", (int(room_id),))
-        machines = c.fetchall()
-        machine_list = [{"id": r[0], "room_id": r[1], "type": r[2]} for r in machines]
+        cur.execute("SELECT * FROM laundry_machines WHERE room_id = %s", (int(room_id),))
+        machines = cur.fetchall()
+        cur.close()
+        if bool(request.args.get('get_status')):
+            machine_list = Room.get_machine_statuses(room_id)
+        else:
+            machine_list = [{"id": r[0], "room_id": r[1], "type": r[2]} for r in machines]
         room = {"id": room[0], "name": room[1], "machines": machine_list}
         return jsonify(result=room)
 
@@ -52,13 +56,14 @@ def req_room_detail(room_id):
 @require_client_id()
 def req_machines(room_id):
     # TODO make a type field to filter on (washer, dryer, etc)
-    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
+    with con.cursor() as cur:
         machine_list = []
         if bool(request.args.get('get_status')):
             machine_list = Room.get_machine_statuses(room_id)
         else:
-            c = con.execute("SELECT * FROM laundry_machines WHERE room_id = ?", (int(room_id),))
-            machines = c.fetchall()
+            cur.execute("SELECT * FROM laundry_machines WHERE room_id = %s", (int(room_id),))
+            machines = cur.fetchall()
+            cur.close()
             if machines is None:
                 return make_json_error('Machines not found')
             machine_list = [{"id": r[0], "room_id": r[1], "type": r[2]} for r in machines]
@@ -67,7 +72,6 @@ def req_machines(room_id):
 
 
         return jsonify(results=machine_list)
-
 
 @app.route('/laundry/rooms/<room_id>/machines/<machine_id>')
 @support_jsonp
@@ -83,9 +87,10 @@ def req_machine_details(room_id, machine_id):
         else:
             machine_return = machine_return[0]
     else:
-        with sqlite3.connect(os.environ['DB_LOCATION']) as con:
-            c = con.execute("SELECT * FROM laundry_machines WHERE id = ? AND room_id = ?", (int(machine_id), int(room_id)))
-            machine = c.fetchone()
+        with con.cursor() as cur:
+            cur.execute("SELECT * FROM laundry_machines WHERE id = %s AND room_id = %s", (int(machine_id), int(room_id)))
+            machine = cur.fetchone()
+            cur.close()
             print(machine)
             if machine is None:
                 return make_json_error('Machines not found')

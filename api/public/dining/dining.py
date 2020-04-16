@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from api import app, make_json_error, support_jsonp
+from api import con, app, make_json_error, support_jsonp
 from api.meta import require_client_id
 import sqlite3
 import json
@@ -38,15 +38,16 @@ def dining_index():
 @require_client_id()
 def req_dining_menu():
     ''' Endpoint for all menu requests (see README for documentation) '''
-    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
-        c = con.execute("SELECT * FROM dining_halls")
-        hall_result = c.fetchall()
+    with con.cursor() as cur:
+        cur.execute("SELECT * FROM dining_halls")
+        hall_result = cur.fetchall()
         dining_halls = [{"dining_hall": h[0]} for h in hall_result]
         for hall in dining_halls:
-            c = con.execute("SELECT * FROM dining_data WHERE dining_hall = ? ORDER BY created_at DESC LIMIT 1", (hall['dining_hall'],))
-            hall_data = c.fetchone()
+            cur.execute("SELECT * FROM dining_data WHERE dining_hall = %s ORDER BY created_at DESC LIMIT 1", (hall['dining_hall'],))
+            hall_data = cur.fetchone()
             if hall_data is not None:
                 hall['special_data'] = json.loads(hall_data[2])
                 hall['weekly_schedule'] = json.loads(hall_data[3])
                 hall['daily_schedule'] = json.loads(hall_data[4])
+        cur.close()
         return jsonify(num_results=len(dining_halls), results=dining_halls)

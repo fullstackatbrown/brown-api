@@ -1,7 +1,7 @@
 from datetime import datetime
 from sys import argv
 from uuid import uuid4
-import sqlite3
+from api import con
 import os
 
 # The maximum number of Client IDs per student email address.
@@ -16,13 +16,14 @@ def add_client_id(email, username, client_id=None):
         print("Invalid student email")
         return None
     client_id = str(uuid4())
-    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
+    with con.cursor() as cur:
         newuser = (client_id, username, email, str(datetime.now()))
         passed = False
         while not passed:
             passed = True
             try:
-                con.execute("INSERT INTO auth (key, name, email, joined) VALUES(?,?,?,?)", newuser)
+                print("WOWOWOWOW")
+                cur.execute("INSERT INTO auth (key, name, email, joined) VALUES(%s,%s,%s,%s)", newuser)
             except:
                 client_id = str(uuid4())
                 passed = False

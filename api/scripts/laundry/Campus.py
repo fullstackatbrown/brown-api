@@ -2,7 +2,6 @@
 import requests
 import datetime
 from bs4 import BeautifulSoup as soup
-import sqlite3
 import os
 from api.scripts.laundry import Room, util
 
