@@ -4,13 +4,16 @@ from werkzeug.exceptions import HTTPException
 from dotenv import load_dotenv
 from functools import wraps
 import os
-from api.scripts.laundry import scrape
+# from api.scripts.laundry import scrape
+from api.scripts import scrape
+
 
 # get .env variables
 load_dotenv()
 
 # Uncomment if updating db on start
 # scrape.main()
+scrape.main()
 
 def make_json_error(ex):
     ''' A wrapper for all exceptions

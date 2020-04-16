@@ -1,15 +1,13 @@
 from sys import argv
 from sys import exit
 import time
+import sqlite3
+import os
 
-from api.scripts.eateries import Ratty, VDub
+from api.scripts.eateries import Eatery
 from api.scripts.email_handler import send_alert_email
 
 # as you add eateries, simply instantiate their class in this list for them to be scraped.
-full_eatery_list = [VDub(), Ratty()]
-
-
-##########################################################################
 
 def scrape(eateries, get_menus=True, get_hours=True, alert=True):
     total_menus, total_hours, total_time = 0, 0, 0
@@ -18,7 +16,7 @@ def scrape(eateries, get_menus=True, get_hours=True, alert=True):
         print("Scraping data for:", eatery.name)
         start = time.time()
         try:
-            num_menus, num_hours = eatery.scrape(get_menus, get_hours)
+            num_menus, num_hours = eatery.scrape()
         except:
             import traceback
             traceback.print_exc()
@@ -34,9 +32,8 @@ def scrape(eateries, get_menus=True, get_hours=True, alert=True):
     print()
     print(total_menus, "total menus and", total_hours, "total hours scraped in", total_time, "seconds.")
 
-##########################################################################
 
-if __name__ == '__main__':
+def main():
     get_menus, get_hours, alert = False, False, True
     eateries = []
     if len(argv) > 1:
@@ -60,9 +57,21 @@ if __name__ == '__main__':
         get_menus, get_hours = True, True
 
     # if no eateries specified, scrape all eateries
-    if len(eateries) == 0:
-        eateries = [Ratty(), VDub()]
-
+    add_eateries = ['andrews-commons', 'sharpe-refectory']
+    eateries = []
+    with sqlite3.connect(os.environ['DB_LOCATION']) as con:
+        # Add eateries to be added
+        for eatery_name in add_eateries:
+            con.execute("INSERT OR REPLACE INTO dining_halls (name) VALUES (?)", (eatery_name,))
+        # Fetch the other eateries from the db
+        c = con.execute("SELECT * FROM dining_halls")
+        dining_halls = c.fetchall()
+        for dining_hall in dining_halls:
+            eateries.append(Eatery(dining_hall[0]))
     print("Scraping Brown Dining Services' sites for menus and hours...")
-    scrape(eateries, get_menus, get_hours, alert=alert)
+    scrape(eateries)
     print("Done scraping.")
+
+
+if __name__ == '__main__':
+    main()

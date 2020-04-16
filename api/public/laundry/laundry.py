@@ -30,7 +30,7 @@ def req_laundry_room_list():
         c = con.execute("SELECT * FROM laundry_rooms")
         results = c.fetchall()
         result_list = [{"name": r[1], "id": r[0]} for r in results]
-        return jsonify(num_result=len(result_list), results=result_list)
+        return jsonify(num_results=len(result_list), results=result_list)
 
 @app.route('/laundry/rooms/<room_id>')
 @support_jsonp
