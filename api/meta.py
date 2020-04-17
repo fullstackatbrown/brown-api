@@ -2,6 +2,7 @@ from functools import wraps
 from flask import render_template, url_for, request, redirect
 from flask import send_from_directory
 from api import con, app, requires_auth, make_json_error
+from api.forms import SignupForm
 from flask import Markup
 import markdown
 from datetime import datetime
@@ -19,7 +20,6 @@ for endpoint in os.listdir("api/public"):
     with open('api/public/' + endpoint + '/info/info.json') as f:
         data = json.load(f)
         apis[endpoint] = {"name": data['name'], "icon": data['icon']}
-print(apis.items())
 apis = apis.items()
 
 # members = db['members']

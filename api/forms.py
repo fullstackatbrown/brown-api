@@ -4,8 +4,6 @@ from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email
 from api.scripts.add_client import add_client_id
 from api.scripts.email_handler import send_id_email
-from api.scripts.add_documentation import add_documentation
-from api.scripts.add_member import add_member
 
 
 class SignupForm(Form):

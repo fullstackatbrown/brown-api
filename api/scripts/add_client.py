@@ -22,7 +22,6 @@ def add_client_id(email, username, client_id=None):
         while not passed:
             passed = True
             try:
-                print("WOWOWOWOW")
                 cur.execute("INSERT INTO auth (key, name, email, joined) VALUES(%s,%s,%s,%s)", newuser)
             except:
                 client_id = str(uuid4())

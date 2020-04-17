@@ -17,7 +17,7 @@ con.autocommit = True
 from api.scripts import scrape
 # from api.scripts.laundry import scrape
 # Uncomment if updating db on start
-scrape.main()
+# scrape.main()
 
 def make_json_error(ex):
     ''' A wrapper for all exceptions
