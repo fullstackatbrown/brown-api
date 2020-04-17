@@ -15,8 +15,8 @@ con = psycopg2.connect("dbname=brownapi user=johnny")
 con.autocommit = True
 
 from api.scripts.laundry import scrape
-# Uncomment if updating db on start
-# scrape.main()
+# Update laundry rooms on start
+scrape.main()
 
 def make_json_error(ex):
     ''' A wrapper for all exceptions
@@ -70,11 +70,6 @@ try:
     app.config.from_object('config')		# load default config file
 except IOError:
     print("Could not load default config file!")
-
-try:
-    app.config.from_pyfile('config.py')		# load instance config file
-except IOError:
-    print("Could not load instance config file!")
 
 # override all error handlers to be 'make_json_error'
 for code in default_exceptions:

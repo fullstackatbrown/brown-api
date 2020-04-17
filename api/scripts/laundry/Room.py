@@ -31,8 +31,8 @@ def get_machine_statuses(room_id):
             machine['type'] == "washNdry" or
             machine['type'] == "dry"):
             new_machine = {
-                            "id": machine['appliance_desc_key'],
-                            "room_id": room_id,
+                            "id": int(machine['appliance_desc_key']),
+                            "room_id": int(room_id),
                             "type": machine['type'],
                             "avail": machine['time_left_lite'] is 'Avaliable',
                             "time_remaining": machine['time_remaining'],

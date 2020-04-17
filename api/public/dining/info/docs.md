@@ -1,127 +1,64 @@
 # Dining
-The eatery names are 'ratty' or 'vdub'. Currently, only the Ratty and VDub are supported.
+The dining eatery essentially reformats forwards the request to the [http://legacy.cafebonappetit.com/api/2](http://legacy.cafebonappetit.com/api/2) endpoint and then appends info stored on the Brown API servers to the return values. If you have no need for these additional fields and would like to optimize your system for request speed, we recommend you access the bonappetit API directly.
 
-## Request Dining Menu
-**Endpoint**: /dining/schedule
+Each dining hall has a unique ID that we take directly from the BA systems, thus, the mapping is
+
+| Café      |  ID |
+|-----------|-----------|
+| Sharpe Refectory  | 1531       |
+| Verney-Woolley  | 1532       |
+| Andrews Commons  | 1533       |
+| Blue Room  | 1534       |
+| Josiah’s  | 1535       |
+| Ivy Room  | 1536       |
+| Campus Market  | 1537       |
+| Café Carts  | 1538       |
+
+
+## Request Dining Schedule
+**Endpoint**: /dining/cafe/&lt;cafe_id&gt;
 
 **Parameters**:
+If data for many cafés are desired, separate many cafe_ids with ","
 
-| Parameter |  Required | Value                               | Type                 |
-|-----------|-----------|-------------------------------------|----------------------|
-| `eatery`  | yes       | either 'ratty' or 'vdub'            | string               |
-| `year`    | no        | the current year will be inferred   | integer              |
-| `month`   | no        | the current month will be inferred  | integer between 0-12 |
-| `day`     | no        | the current day will be inferred    | integer between 0-31 |
-| `hour`    | no        | the current hour will be inferred   | integer between 0-23 |
+**Returns**: information for the cafe with the given cafe_id
 
-**Returns**: The number of menus found and a list of those menus in the form:
-
-```javascript
-{'num_results': INTEGER,
- 'results': [
-   {
-     'dining_hall': STRING,
-     'daily_schedule': [...],
-     'weekly_schedule': [...],
-     'special_data': [...],
-   }
- }
-```
-
-**daily_schedule** will appear in the form
+Schedule information will be given under 'days' in the format:
 ```javascript
 {
-    "meal_title": STRING,
-    "timespan": {
-      "start_time": STRING, // Isoformat
-      "end_time": STRING // Isoformat
+  'date': STRING,
+  'dayparts': [
+    {
+      'starttime': STRING,
+      'endtime': STRING,
+      'hide': STRING,
+      'id': STRING,
+      'label': STRING,
+      'message': STRING
     }
-    "menu": [
-      {
-        "dish_name": STRING,
-        "dish_description": STRING,
-        "station": STRING,
-        "vegetarian": BOOLEAN,
-        "timespan": {
-          "start_time": STRING, // Isoformat
-          "end_time": STRING // Isoformat
-        }
-      },
-      ...
-    ]
-}
-```
-**Examples:**  
-How to get the current menu at the Ratty...
-`https://api.students.brown.edu/dining/menu?client_id=your-client-id&eatery=ratty`
-
-How to get the menu at the Ratty on the 16th of this month at 5PM (that's 17:00!)...
-`https://api.students.brown.edu/dining/menu?client_id=your-client-id&eatery=ratty&day=16&hour=17`
-
-How to get all menus at the Ratty on the 16th of this month...
-`https://api.students.brown.edu/dining/menu?client_id=your-client-id&eatery=ratty&day=16`
-
-## Request Dining Hours
-**Endpoint**: /dining/schedule
-
-**Parameters**:
-
-| Parameter |  Required | Value                    | Type                 |Default              |
-|-----------|-----------|--------------------------|----------------------|---------------------|
-| `eatery`  | no        | either 'ratty' or 'vdub' | string               |all dining halls     |
-| `year`    | no        | the year desired         | integer              |current year         |
-| `month`   | no        | the month desired        | integer between 0-12 |current month        |
-| `day`     | no        | the day desired          | integer between 0-31 |current day          |
-
-**Returns**: The number of menus found and a list of those menus in the form:
-
-```javascript
-{'num_results': INTEGER,
-   [{'eatery': STRING,
-     'year': INTEGER,
-     'month': INTEGER,
-     'day': INTEGER,
-     'open_hour': INTEGER,
-     'open_minute': INTEGER,
-     'close_hour': INTEGER,
-     'close_minute': INTEGER},
-     ...
-   ]
+  ]
 }
 ```
 
-NOTE: Each eatery has different menu sections (e.g. "Bistro", "Main Menu", etc).
-NOTE: If the eatery is closed, num_results will equal zero.
-
 **Examples:**  
-How to get today's hours for the Ratty...
-`https://api.students.brown.edu/dining/hours?client_id=your-client-id&eatery=ratty`
 
-How to get the hours for the VDub on the 18th of this month...
-`https://api.students.brown.edu/dining/hours?client_id=your-client-id&eatery=vdub&day=18`
+Get ratty data - `/dining/cafes/1531?client_id=<client_id>`
 
-## Find Open Eateries  
-**Endpoint**: /dining/open
+Get ratty and vdub data - `/dining/cafes/1531,1532?client_id=<client_id>`
+
+## Request Dining Menu
+**Endpoint**: /dining/cafe/&lt;cafe_id&gt;/menu/&lt;date&gt;
 
 **Parameters**:
+Dates are formated in YYYY-MM-DD form. Additionally, **date is an optional parameter** and you may query /dining/cafe/&lt;cafe_id&gt;/menu to find the menu for the current day
 
-| Parameter |  Required | Value                               | Type                 |Default              |
-|-----------|-----------|-------------------------------------|----------------------|---------------------|
-| `year`    | no        | the current year will be inferred   | integer              |Type                 |
-| `month`   | no        | the current month will be inferred  | integer between 0-12 |Type                 |
-| `day`     | no        | the current day will be inferred    | integer between 0-31 |Type                 |
-| `hour`    | no        | the current hour will be inferred   | integer between 0-23 |Type                 |
-| `minute`  | no        | the current minute will be inferred | integer between 0-59 |Type                 |
 
-**Returns**:
-```javascript
-{'open_eateries': [hours_1, hours_2, ...]}
-```
-NOTE: is an hours object just like in the response from dining/hours.
+**Returns**: Menus for the selected dining halls on the selected days.
 
 **Examples:**  
-Find out what eateries are currently open...
-`https://api.students.brown.edu/dining/find?client_id=your-client-id`
 
-Find out what eateries are open on the 12th of April...
-`https://api.students.brown.edu/dining/find?client_id=your-client-id&day=12&month=4`
+Get ratty menu today -
+`/dining/cafes/1531/menu?client_id=<client_id>`
+
+Get ratty and vdub menus on specific dates -
+`/dining/cafes/1531,1532/menu/2018-2-4,2018-2-5?client_id=<client_id>`
