@@ -34,7 +34,7 @@ def favicon():
 @app.route('/docs', methods=['GET'])
 def root():
     contents = ""
-    with open('api/static/misc/getting_started.md') as f:
+    with open('api/static/misc/home.md') as f:
             contents = f.read()
     contents = Markup(markdown.markdown(contents, extensions=['tables', 'fenced_code', 'codehilite']))
     return render_template('home.html',

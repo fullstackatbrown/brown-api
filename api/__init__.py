@@ -14,8 +14,7 @@ load_dotenv()
 con = psycopg2.connect("dbname=brownapi user=johnny")
 con.autocommit = True
 
-from api.scripts import scrape
-# from api.scripts.laundry import scrape
+from api.scripts.laundry import scrape
 # Uncomment if updating db on start
 # scrape.main()
 

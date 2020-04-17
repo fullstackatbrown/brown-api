@@ -45,7 +45,7 @@ You'll need the latest version of Python 3, along with `virtualenv` and `pip`. G
 9. You're code will be merged into `master` once your pull request is accepted.
    Your code will be run against flake8, a tool which will check for coding
    style and common mistakes. You can run `flake8` locally from within the virtual
-   environment. 
+   environment.
 
 #### How to Run Scripts
 
@@ -91,8 +91,8 @@ The Dining API is updated every day by a scraper that parses the menus from Brow
 - *month*: &lt;INTEGER&gt;,
 - *day*: &lt;INTEGER&gt;,
 - *start_hour*: &lt;INTEGER&gt;, 	**<-- these four lines describe a menu's start/end times**
-- *start_minute*: &lt;INTEGER&gt;, 
-- *end_hour*: &lt;INTEGER&gt;, 
+- *start_minute*: &lt;INTEGER&gt;,
+- *end_hour*: &lt;INTEGER&gt;,
 - *end_minute*: &lt;INTEGER&gt;,
 - *meal*: &lt;STRING&gt;,
 - *food*: [ &lt;STRING&gt;, &lt;STRING&gt;, ... ]  **<-- list of all food items on menu**
@@ -106,8 +106,8 @@ The Dining API is updated every day by a scraper that parses the menus from Brow
 - *month*: &lt;INTEGER&gt;,
 - *day*: &lt;INTEGER&gt;,
 - *open_hour*: &lt;INTEGER&gt;,
-- *open_minute*: &lt;INTEGER&gt;, 
-- *close_hour*: &lt;INTEGER&gt;, 
+- *open_minute*: &lt;INTEGER&gt;,
+- *close_hour*: &lt;INTEGER&gt;,
 - *close_minute*: &lt;INTEGER&gt;
 
 #### db.dining\_all\_foods
