@@ -16,7 +16,7 @@ con.autocommit = True
 
 from api.scripts.laundry import scrape
 # Update laundry rooms on start
-scrape.main()
+# scrape.main()
 
 def make_json_error(ex):
     ''' A wrapper for all exceptions

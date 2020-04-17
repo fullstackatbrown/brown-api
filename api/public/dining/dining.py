@@ -101,9 +101,9 @@ def clean_data(data):
         # Replace all item data with relevant info
         for day_i, day in enumerate(data['days']):
             for cafe_id in day['cafes']:
-                for dayparts_i, dayparts in enumerate(day['cafes'][cafe_id]['dayparts']):
-                    for daypart_i, daypart in enumerate(dayparts):
-                        for station_i, station in enumerate(daypart['stations']):
-                            for item_i, item in enumerate(station['items']):
-                                data['days'][day_i]['cafes'][cafe_id]['dayparts'][dayparts_i][daypart_i]['stations'][station_i]['items'][item_i] = items_augmented[item]
+                data['days'][day_i]['cafes'][cafe_id]['dayparts'] = data['days'][day_i]['cafes'][cafe_id]['dayparts'][0]
+                for daypart_i, daypart in enumerate(day['cafes'][cafe_id]['dayparts']):
+                    for station_i, station in enumerate(daypart['stations']):
+                        for item_i, item in enumerate(station['items']):
+                            data['days'][day_i]['cafes'][cafe_id]['dayparts'][daypart_i]['stations'][station_i]['items'][item_i] = items_augmented[item]
         return data
