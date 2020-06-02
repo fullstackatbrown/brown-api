@@ -22,3 +22,4 @@ Werkzeug==0.10.4
 WTForms==2.1
 python-dotenv==0.12.0
 psycopg2-binary==2.8.5
+pygments==2.6.1
