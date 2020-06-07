@@ -24,7 +24,7 @@ Data is stored in a single [MongoDB](https://docs.mongodb.com/getting-started/py
 You'll need the latest version of Python 3, along with `virtualenv` and `pip`. Go ahead and look up these programs if you aren't familiar with them. They're crucial to our development process.
 
 1. Clone this repository to your own machine:
-	- `git clone https://github.com/hackatbrown/brown-apis.git`
+	- `git clone https://github.com/fullstackatbrown/brown-api.git`
 2. Open a terminal and navigate to the top level of the repository (_brown-apis/_).
 3. Create and activate a virtual environment (again, look up `virtualenv` online to understand what this does):
 	- ``virtualenv -p `which python3` venv``
