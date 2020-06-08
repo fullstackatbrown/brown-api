@@ -41,12 +41,12 @@ def req_room_detail(room_id):
         room = cur.fetchone()
         if room is None:
             return make_json_error('Room not found')
-        cur.execute("SELECT * FROM laundry_machines WHERE room_id = %s", (int(room_id),))
-        machines = cur.fetchall()
-        cur.close()
         if bool(request.args.get('get_status')):
             machine_list = Room.get_machine_statuses(room_id)
         else:
+            cur.execute("SELECT * FROM laundry_machines WHERE room_id = %s", (int(room_id),))
+            machines = cur.fetchall()
+            cur.close()
             machine_list = [{"id": int(r[0]), "room_id": int(r[1]), "type": r[2]} for r in machines]
         room = {"id": room[0], "name": room[1], "machines": machine_list}
         return jsonify(result=room)

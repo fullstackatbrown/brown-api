@@ -24,7 +24,7 @@ please request [/laundry/rooms](/laundry/rooms) with your client_id. All laundry
 
 **Example:**  
 
-`/dining/schedule?client_id=<client_id>`
+`/laundry/rooms?client_id=<client_id>`
 
 ## Request Specific Room
 **Endpoint**: /laundry/rooms/&lt;room_id&gt;
@@ -42,14 +42,18 @@ please request [/laundry/rooms](/laundry/rooms) with your client_id. All laundry
 {
 	'result': {
 		'id': INTEGER,
+		'name': STRING,
 		'machines': [
 			{
 				'id': INTEGER,
 				'room_id': INTEGER,
+				'type': STRING,
+				'machine_no': INTEGER, // if get_status is true
 				'avail': BOOLEAN, // if get_status is true
+				'ext_cycle': BOOLEAN, // if get_status is true
+				'offline': BOOLEAN, // if get_status is true
 				'average_run_time': INTEGER, // if get_status is true
 				'time_remaining': INTEGER, // if get_status is true
-				'type': STRING
 			},
 			...
 		]
@@ -81,7 +85,13 @@ Get without statuses - `/laundry/rooms/<room_id>?get_status=true&client_id=<clie
 	'result': {
 		'id': INTEGER,
 		'room_id': INTEGER,
-		'type': STRING
+		'type': STRING,
+		'machine_no': INTEGER, // if get_status is true
+		'avail': BOOLEAN, // if get_status is true
+		'ext_cycle': BOOLEAN, // if get_status is true
+		'offline': BOOLEAN, // if get_status is true
+		'average_run_time': INTEGER, // if get_status is true
+		'time_remaining': INTEGER, // if get_status is true
 	}
 }
 ```
