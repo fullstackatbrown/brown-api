@@ -18,7 +18,7 @@ requests==2.7.0
 six==1.9.0
 urllib3==1.12
 webassets==0.11.1
-Werkzeug==0.10.4
+Werkzeug==0.15.5
 WTForms==2.1
 python-dotenv==0.12.0
 psycopg2-binary==2.8.5
